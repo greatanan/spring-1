@@ -85,6 +85,18 @@ import org.springframework.util.ClassUtils;
  *
  * @see #setConfigLocation
  * @see #setDataSource
+ * mynote:
+ * MyBatis 初始化过程时提到， Sq!SessionFactoryBuilder 会通过 XMLConfigBuilder
+ * 等对象读取 mybatis-config.xml 配置文件以及映射配置信息，得到 Configuration 对象，然后创建
+ * Sq!SessionFactory 对象。而在与 spring 集成时， MyBatis 中的 Sq!SessionFactory 对象则是由
+ * Sq!SessionFactoryBean 创建的
+ *
+ *
+ * Sq!SessionFactoryBean 是如何创建 Sq!SessionFactory 对象的，该功能是
+ * Sq!SessionFactoryBean.buildSq!SessionFactory（）方法中实现的，其中涉及使用 XMLConfigBui Ider
+ * 创建 Configuration 对象、对 Configuration 对象进行配置、使用 XMLMapperBuilder 解析映射配
+ * 置文件 以及 Mapper 接口等 些列操作，这些操作的原理都在前面介绍过了
+ *
  */
 public class SqlSessionFactoryBean
     implements FactoryBean<SqlSessionFactory>, InitializingBean, ApplicationListener<ApplicationEvent> {

@@ -53,6 +53,7 @@ import org.springframework.beans.factory.FactoryBean;
  */
 public class MapperFactoryBean<T> extends SqlSessionDaoSupport implements FactoryBean<T> {
 
+  //mynote:
   private Class<T> mapperInterface;
 
   private boolean addToConfig = true;
@@ -70,14 +71,18 @@ public class MapperFactoryBean<T> extends SqlSessionDaoSupport implements Factor
    */
   @Override
   protected void checkDaoConfig() {
+
     super.checkDaoConfig();
 
     notNull(this.mapperInterface, "Property 'mapperInterface' is required");
 
     Configuration configuration = getSqlSession().getConfiguration();
+
     if (this.addToConfig && !configuration.hasMapper(this.mapperInterface)) {
       try {
+
         configuration.addMapper(this.mapperInterface);
+
       } catch (Exception e) {
         logger.error("Error while adding the mapper '" + this.mapperInterface + "' to configuration.", e);
         throw new IllegalArgumentException(e);
@@ -92,6 +97,7 @@ public class MapperFactoryBean<T> extends SqlSessionDaoSupport implements Factor
    */
   @Override
   public T getObject() throws Exception {
+    //mynote:  获取mapper接口的代理对象
     return getSqlSession().getMapper(this.mapperInterface);
   }
 

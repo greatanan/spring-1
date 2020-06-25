@@ -161,6 +161,7 @@ public class ClassPathMapperScanner extends ClassPathBeanDefinitionScanner {
    * that extends a markerInterface or/and those annotated with the annotationClass
    */
   public void registerFilters() {
+
     boolean acceptAllInterfaces = true;
 
     // if specified, use the given annotation and / or marker interface
@@ -198,6 +199,7 @@ public class ClassPathMapperScanner extends ClassPathBeanDefinitionScanner {
    */
   @Override
   public Set<BeanDefinitionHolder> doScan(String... basePackages) {
+
     Set<BeanDefinitionHolder> beanDefinitions = super.doScan(basePackages);
 
     if (beanDefinitions.isEmpty()) {
@@ -210,6 +212,14 @@ public class ClassPathMapperScanner extends ClassPathBeanDefinitionScanner {
     return beanDefinitions;
   }
 
+  /**
+   * mynote:
+   * ClassPathMapperScanner.processBeanDefinitions（）方法会对 do Scan（）方法中扫描到的
+   * BeanDe mition 集合进行修改，主要是将其中记 的接口类型改造为 MapperFactoryBean 类型，
+   * 井填充 MapperFactoryBean 所需的相关信息，这样，后续即可通过 MapperFactoryBean 成相应
+   * 功能了。
+   * @param beanDefinitions
+   */
   private void processBeanDefinitions(Set<BeanDefinitionHolder> beanDefinitions) {
     AbstractBeanDefinition definition;
     BeanDefinitionRegistry registry = getRegistry();
@@ -230,6 +240,7 @@ public class ClassPathMapperScanner extends ClassPathBeanDefinitionScanner {
       // the mapper interface is the original class of the bean
       // but, the actual class of the bean is MapperFactoryBean
       definition.getConstructorArgumentValues().addGenericArgumentValue(beanClassName); // issue #59
+      //mynote:将 BeanDefinition 中记录的 Bean 类型修改为 MapperFactoryBe an
       definition.setBeanClass(this.mapperFactoryBeanClass);
 
       definition.getPropertyValues().add("addToConfig", this.addToConfig);
