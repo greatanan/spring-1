@@ -88,13 +88,12 @@ import org.springframework.util.StringUtils;
  * @see MapperFactoryBean
  * @see ClassPathMapperScanner
  *
- * MapperScannerConfigurer 实现了 BeanDefinitionRegisPostProcessor 接口 该接口中的
- * postProcessBeanDefinitionRegistry（） 方法会在系统初始化的过程中被调用，该方法是
- * MapperScannerConfigurer 实现扫描的关键
+ *      MapperScannerConfigurer 实现了 BeanDefinitionRegisPostProcessor 接口 该接口中的 postProcessBeanDefinitionRegistry（）
+ *      方法会在系统初始化的过程中被调用，该方法是 MapperScannerConfigurer 实现扫描的关键
  *
  */
 public class MapperScannerConfigurer
-  //mynote:BeanDefinitionRegistryPostProcessor 是一个 BeanFactoryPostProcessor
+    // mynote:BeanDefinitionRegistryPostProcessor 是一个 BeanFactoryPostProcessor
     implements BeanDefinitionRegistryPostProcessor, InitializingBean, ApplicationContextAware, BeanNameAware {
 
   private String basePackage;
@@ -361,7 +360,7 @@ public class MapperScannerConfigurer
       processPropertyPlaceHolders();
     }
 
-    //mynote:这个组件是进行扫描我们的dao层接口的
+    // mynote:这个组件是进行扫描我们的dao层接口的
     ClassPathMapperScanner scanner = new ClassPathMapperScanner(registry);
 
     scanner.setAddToConfig(this.addToConfig);
@@ -383,7 +382,7 @@ public class MapperScannerConfigurer
 
     scanner.registerFilters();
 
-    //mynote:扫描我们的dao层接口包  这里是调用的spring的scan方法
+    // mynote:扫描我们的dao层接口包 这里是调用的spring的scan方法
     scanner.scan(
         StringUtils.tokenizeToStringArray(this.basePackage, ConfigurableApplicationContext.CONFIG_LOCATION_DELIMITERS));
   }

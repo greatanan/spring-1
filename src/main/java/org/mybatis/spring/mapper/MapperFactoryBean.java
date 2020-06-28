@@ -1,5 +1,5 @@
 /**
- * Copyright 2010-2019 the original author or authors.
+ * Copyright 2010-2020 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -53,7 +53,7 @@ import org.springframework.beans.factory.FactoryBean;
  */
 public class MapperFactoryBean<T> extends SqlSessionDaoSupport implements FactoryBean<T> {
 
-  //mynote:
+  // mynote:
   private Class<T> mapperInterface;
 
   private boolean addToConfig = true;
@@ -97,7 +97,7 @@ public class MapperFactoryBean<T> extends SqlSessionDaoSupport implements Factor
    */
   @Override
   public T getObject() throws Exception {
-    //mynote:  获取mapper接口的代理对象
+    // mynote: 获取mapper接口的代理对象
     return getSqlSession().getMapper(this.mapperInterface);
   }
 
