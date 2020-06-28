@@ -85,17 +85,15 @@ import org.springframework.util.ClassUtils;
  *
  * @see #setConfigLocation
  * @see #setDataSource
- * mynote:
- * MyBatis 初始化过程时提到， Sq!SessionFactoryBuilder 会通过 XMLConfigBuilder
- * 等对象读取 mybatis-config.xml 配置文件以及映射配置信息，得到 Configuration 对象，然后创建
- * Sq!SessionFactory 对象。而在与 spring 集成时， MyBatis 中的 Sq!SessionFactory 对象则是由
- * Sq!SessionFactoryBean 创建的
+ *
+ *      mynote: MyBatis 初始化过程时提到， SqlSessionFactoryBuilder 会通过 XMLConfigBuilder 等对象读取 mybatis-config.xml
+ *      配置文件以及映射配置信息，得到 Configuration 对象，然后创建 SqlSessionFactory 对象。
+ *      而在与 spring 集成时， MyBatis中的 SqlSessionFactory 对象则是由SqlSessionFactoryBean 创建的
  *
  *
- * Sq!SessionFactoryBean 是如何创建 Sq!SessionFactory 对象的，该功能是
- * Sq!SessionFactoryBean.buildSq!SessionFactory（）方法中实现的，其中涉及使用 XMLConfigBui Ider
- * 创建 Configuration 对象、对 Configuration 对象进行配置、使用 XMLMapperBuilder 解析映射配
- * 置文件 以及 Mapper 接口等 些列操作，这些操作的原理都在前面介绍过了
+ *      SqlSessionFactoryBean 是如何创建 Sq!SessionFactory 对象的，该功能是
+ *      SqlSessionFactoryBean.buildSqlSessionFactory（）方法中实现的，其中涉及使用 XMLConfigBuilIder 创建 Configuration 对象、对
+ *      Configuration 对象进行配置、使用 XMLMapperBuilder 解析映射配置文件 以及 Mapper 接口等一些列操作，这些操作的原理都在前面介绍过了
  *
  */
 public class SqlSessionFactoryBean
@@ -527,11 +525,13 @@ public class SqlSessionFactoryBean
         targetConfiguration.getVariables().putAll(this.configurationProperties);
       }
     } else if (this.configLocation != null) {
+      //mynote: 创建xmlConfigBuilder对象 读取指定的配置文件
       xmlConfigBuilder = new XMLConfigBuilder(this.configLocation.getInputStream(), null, this.configurationProperties);
       targetConfiguration = xmlConfigBuilder.getConfiguration();
     } else {
       LOGGER.debug(
           () -> "Property 'configuration' or 'configLocation' not specified, using default MyBatis Configuration");
+      //mynote: 直接创建Configuration对象并进行配置
       targetConfiguration = new Configuration();
       Optional.ofNullable(this.configurationProperties).ifPresent(targetConfiguration::setVariables);
     }
@@ -596,6 +596,7 @@ public class SqlSessionFactoryBean
 
     if (xmlConfigBuilder != null) {
       try {
+        //mynote: 解析配置文件
         xmlConfigBuilder.parse();
         LOGGER.debug(() -> "Parsed configuration file: '" + this.configLocation + "'");
       } catch (Exception ex) {
@@ -606,6 +607,7 @@ public class SqlSessionFactoryBean
     }
 
     targetConfiguration.setEnvironment(new Environment(this.environment,
+        //mynote: 如果未配置transactionFactory就使用SpringManagedTransactionFactory
         this.transactionFactory == null ? new SpringManagedTransactionFactory() : this.transactionFactory,
         this.dataSource));
 
@@ -613,6 +615,7 @@ public class SqlSessionFactoryBean
       if (this.mapperLocations.length == 0) {
         LOGGER.warn(() -> "Property 'mapperLocations' was specified but matching resources are not found.");
       } else {
+        //mynote: 根据mapperLocations配置，处理映射配置文件以及相应的Mapper接口
         for (Resource mapperLocation : this.mapperLocations) {
           if (mapperLocation == null) {
             continue;
@@ -632,7 +635,7 @@ public class SqlSessionFactoryBean
     } else {
       LOGGER.debug(() -> "Property 'mapperLocations' was not specified.");
     }
-
+    //mynote: 最终调用sqlSessionFactoryBuilder.build（）方法  创建SqlSessionFactory并返回
     return this.sqlSessionFactoryBuilder.build(targetConfiguration);
   }
 
